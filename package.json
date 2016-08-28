@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "description": "nodejs cli wrapper for the builtin `nmcli` command",
   "main": "index.js",
+  "bin": {
+    "wifi": "cli.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,5 +24,10 @@
   "bugs": {
     "url": "https://github.com/arnellebalane/wifi-cli/issues"
   },
-  "homepage": "https://github.com/arnellebalane/wifi-cli#readme"
+  "homepage": "https://github.com/arnellebalane/wifi-cli#readme",
+  "dependencies": {
+    "inquirer": "^1.1.2",
+    "meow": "^3.7.0",
+    "ora": "^0.3.0"
+  }
 }
