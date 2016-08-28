@@ -26,8 +26,10 @@
   },
   "homepage": "https://github.com/arnellebalane/wifi-cli#readme",
   "dependencies": {
+    "camelcase": "^3.0.0",
     "inquirer": "^1.1.2",
     "meow": "^3.7.0",
-    "ora": "^0.3.0"
+    "ora": "^0.3.0",
+    "shelljs": "^0.7.4"
   }
 }
