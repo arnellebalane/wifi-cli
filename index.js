@@ -17,14 +17,19 @@ function execute(command) {
 function getConnectedInterfaces() {
     return execute('nmcli -m multiline device')
         .then(multilineToJsonArray)
-        .then(interfaces => {
-            return interfaces.filter(iface => iface.state === 'connected');
-        });
+        .then(ifaces => ifaces.filter(iface => iface.state === 'connected'));
 }
 
 
 function getConnectedInterface() {
-    return getConnectedInterfaces().then(interfaces => interfaces[0].device);
+    return getConnectedInterfaces().then(ifaces => ifaces[0].device);
+}
+
+
+function status() {
+    return execute('nmcli -m multiline connection status')
+        .then(multilineToJsonArray)
+        .then(networks => networks.find(network => network.default === 'yes'));
 }
 
 
@@ -41,4 +46,5 @@ function scan() {
 }
 
 
+exports.status = status;
 exports.scan = scan;
