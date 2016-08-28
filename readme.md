@@ -1,10 +1,9 @@
 # wifi-cli
 
 
-Manage wireless network connections from the command line. This package is
-simply a command line wrapper for the [`wifi-control`](wifi-control) package,
-which performs the actual scanning, connecting, and disconnecting of wireless
-networks.
+Manage wireless network connections from the command line. This package wraps
+the builtin `nmcli` command in Linux systems, and thus will not work on other
+operating systems.
 
 
 ## Installation
