@@ -24,39 +24,44 @@ if (command === 'scan') {
     spinner.start();
     spinner.text = 'Scanning nearby wireless networks'
 
-    wifi.scan()
-        .then(networks => {
-            if (networks.length === 0) {
-                throw new Error('No wireless networks found');
-            }
-            spinner.stop();
-            return networks;
-        })
-        .then(networks => {
-            const lengths = widestColumnValues(networks);
-            lengths.ssid = Math.max(lengths.ssid, 'NAME'.length);
-            lengths.security = Math.max(lengths.security, 'SECURITY'.length);
-            lengths.signal = Math.max(lengths.signal, 'SIGNAL'.length);
+    wifi.scan().then(networks => {
+        if (networks.length === 0) {
+            throw new Error('No wireless networks found');
+        }
+        spinner.stop();
+        return displayWifiTable(networks);
+    }).catch(error => {
+        spinner.text = error.message;
+        spinner.fail();
+    });
+}
 
-            let tableHead = [
-                rightPad('', 3) + rightPad('NAME', lengths.ssid),
-                rightPad('SECURITY', lengths.security),
-                rightPad('SIGNAL', lengths.signal)
-            ].join(' '.repeat(5));
-            console.log(`\n  ${tableHead}\n`);
 
-            networks.forEach((network, i) => {
-                let tableRow = [
-                    rightPad(i + 1, 3) + rightPad(network.ssid, lengths.ssid),
-                    rightPad(network.security, lengths.security),
-                    rightPad(network.signal, lengths.signal)
-                ].join(' '.repeat(5));
-                console.log(`  ${tableRow}`);
-            });
-            return networks;
-        })
-        .catch(error => {
-            spinner.text = error.message;
-            spinner.fail();
-        });
+
+
+
+function displayWifiTable(networks) {
+    const lengths = widestColumnValues(networks);
+    lengths.ssid = Math.max(lengths.ssid, 'NAME'.length);
+    lengths.security = Math.max(lengths.security, 'SECURITY'.length);
+    lengths.signal = Math.max(lengths.signal, 'SIGNAL'.length);
+
+    const headRow = wifiTableRow('', 'SSID', 'SECURITY', 'SIGNAL', lengths);
+    console.log(`\n  ${headRow}\n`);
+
+    networks.forEach((network, i) => {
+        const row = wifiTableRow(i + 1, network.ssid, network.security || '-',
+            network.signal, lengths);
+        console.log(`  ${row}`);
+    });
+    return networks;
+}
+
+
+function wifiTableRow(id, ssid, security, signal, lengths) {
+    return [
+        rightPad(id, 3) + rightPad(ssid, lengths.ssid),
+        rightPad(security, lengths.security),
+        rightPad(signal, lengths.signal)
+    ].join(' '.repeat(5));
 }
