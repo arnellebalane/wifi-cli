@@ -1,0 +1,25 @@
+{
+  "name": "wifi-cli",
+  "version": "0.0.0",
+  "description": "nodejs cli wrapper for the builtin `nmcli` command",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arnellebalane/wifi-cli.git"
+  },
+  "keywords": [
+    "nmcli",
+    "wifi",
+    "cli",
+    "network-manager"
+  ],
+  "author": "Arnelle Balane <arnellebalane@gmail.com> (arnellebalane.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/arnellebalane/wifi-cli/issues"
+  },
+  "homepage": "https://github.com/arnellebalane/wifi-cli#readme"
+}
