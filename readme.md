@@ -1,10 +1,10 @@
 # wifi-cli
 
 
-Manage wifi connections from the command line. Wraps the builtin `nmcli`
-command in Linux systems (not sure if available in other platforms, so if you
-are using a different OS, this tool might not work yet). Support for other
-platforms will be added the future, hopefully.
+Manage wireless network connections from the command line. This package is
+simply a command line wrapper for the [`wifi-control`](wifi-control) package,
+which performs the actual scanning, connecting, and disconnecting of wireless
+networks.
 
 
 ## Installation
@@ -60,36 +60,10 @@ $ wf disconnect
   You are now disconnected from "NETWORK_NAME"
 ```
 
-List wireless network connection history:
-
-```
-$ wf history
-
-     SSID              SIGNAL
-
-  1  "NETWORK_ONE"     =====
-  2  "NETWORK_TWO"     ====
-  3  "NETWORK_THREE"   ===
-```
-
-Remove a wireless network from connection history:
-
-```
-$ wf forget 1
-$ wf forget "NETWORK_NAME"
-
-  "NETWORK_NAME" removed from connection history
-```
-
-Clear connection history
-
-```
-$ wf clear
-
-  Wireless network connection history is now cleared
-```
-
 
 ## License
 
 MIT License
+
+
+[wifi-control]: https://www.npmjs.com/package/wifi-control

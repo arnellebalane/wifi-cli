@@ -28,6 +28,7 @@
   "dependencies": {
     "inquirer": "^1.1.2",
     "meow": "^3.7.0",
-    "ora": "^0.3.0"
+    "ora": "^0.3.0",
+    "wifi-control": "^2.0.0"
   }
 }

@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+const meow = require('meow');
+
+
+const cli = meow(`
+  usage:
+
+    wf                        - display current connection
+    wf list                   - list available networks
+    wf connect <id|ssid>      - connect to a networrk
+    wf disconnect             - disconnect from current network
+`);
+
+const command = cli.input[0] || 'list';
+const network = cli.input[1];
