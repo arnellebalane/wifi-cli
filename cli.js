@@ -10,10 +10,6 @@ const cli = meow(`
     wf list                 - list available networks
     wf connect <id|ssid>    - connect to a networrk
     wf disconnect           - disconnect from current network
-
-  options:
-
-    -i, --iface             - specify a wireless interface to use
 `);
 
 const command = cli.input[0] || 'list';

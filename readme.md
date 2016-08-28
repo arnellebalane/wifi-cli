@@ -51,12 +51,6 @@ $ wf connect "NETWORK_NAME"
   You are now connected to "NETWORK_NAME"
 ```
 
-When connecting, the wireless interface to be used can also be specified:
-
-```
-$ wf connect 1 --iface wlan1
-```
-
 Disconnecting from a wireless network:
 
 ```
