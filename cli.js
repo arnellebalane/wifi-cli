@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const meow = require('meow');
+const inquirer = require('inquirer');
 const spinner = require('ora')();
 const wifi = require('.');
 
@@ -17,7 +18,7 @@ const cli = meow(`
 `);
 
 const command = cli.input[0] || 'status';
-const network = cli.input[1];
+const target = cli.input[1];
 
 
 
@@ -44,6 +45,32 @@ if (command === 'status') {
         spinner.stop();
         return displayWifiTable(networks);
     });
+} else if (command === 'connect') {
+    spinner.text = 'Establishing wireless network connection';
+
+    promise = wifi.network(target)
+        .then(network => {
+            if (!network) {
+                throw new Error(`Wireless network ${target} not found`);
+            } else if (!network.security) {
+                return Promise.resolve([network.ssid]);
+            }
+            spinner.stop();
+            return askWifiPassword(network.ssid)
+                .then(password => [network.ssid, password]);
+        })
+        .then(credentials => {
+            spinner.text = `Connecting to wireless network ${credentials[0]}`;
+            spinner.start();
+            return wifi.connect(...credentials);
+        })
+        .then(network => {
+            if (!network) {
+                throw new Error(`Failed to connect to wireless network`);
+            }
+            spinner.text = `You are now connected to ${network.name}`;
+            spinner.succeed();
+        });
 } else {
     promise = Promise.reject(new Error(`Unknown command: ${command}`))
 }
@@ -79,4 +106,13 @@ function wifiTableRow(id, ssid, security, signal, lengths) {
         rightPad(security, lengths.security),
         rightPad(signal, lengths.signal)
     ].join(' '.repeat(5));
+}
+
+
+function askWifiPassword(ssid) {
+    return inquirer.prompt([{
+        type: 'password',
+        name: 'password',
+        message: `Password for wireless network ${ssid}:`
+    }]).then(answers => answers.password);
 }

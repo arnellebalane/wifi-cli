@@ -46,5 +46,26 @@ function scan() {
 }
 
 
+function network(id) {
+    return scan().then(networks => {
+        if (typeof id === 'number' && id > 0 &&  id <= networks.length) {
+            return networks[id - 1];
+        }
+        return networks.find(network => network.ssid === id);
+    });
+}
+
+
+function connect(ssid, password) {
+    let command = `nmcli device wifi connect "${network}"`;
+    if (password) {
+        command += ` password "${password}"`;
+    }
+    return execute(command).then(status);
+}
+
+
 exports.status = status;
 exports.scan = scan;
+exports.network = network;
+exports.connect = connect;
