@@ -15,13 +15,16 @@ To use this tool, you have to install it globally through `npm`:
 $ npm install -g wifi-cli
 ```
 
+After installation, you will then have the `wf` command available from the
+command line.
+
 
 ## Usage
 
 Display current wireless network connection:
 
 ```
-$ wifi
+$ wf
 
   You are connected to "NETWORK_NAME"
 ```
@@ -29,7 +32,7 @@ $ wifi
 List available wireless networks:
 
 ```
-$ wifi list
+$ wf list
 
      SSID              SIGNAL
 
@@ -42,8 +45,8 @@ Connect to a wireless network (if the network is already in your history,
 you might not be asked for a password again):
 
 ```
-$ wifi connect 1
-$ wifi connect "NETWORK_NAME"
+$ wf connect 1
+$ wf connect "NETWORK_NAME"
   password:
 
   You are now connected to "NETWORK_NAME"
@@ -52,7 +55,7 @@ $ wifi connect "NETWORK_NAME"
 Disconnecting from a wireless network:
 
 ```
-$ wifi disconnect
+$ wf disconnect
 
   You are now disconnected from "NETWORK_NAME"
 ```
@@ -60,7 +63,7 @@ $ wifi disconnect
 List wireless network connection history:
 
 ```
-$ wifi history
+$ wf history
 
      SSID              SIGNAL
 
@@ -72,8 +75,8 @@ $ wifi history
 Remove a wireless network from connection history:
 
 ```
-$ wifi forget 1
-$ wifi forget "NETWORK_NAME"
+$ wf forget 1
+$ wf forget "NETWORK_NAME"
 
   "NETWORK_NAME" removed from connection history
 ```
@@ -81,7 +84,7 @@ $ wifi forget "NETWORK_NAME"
 Clear connection history
 
 ```
-$ wifi clear
+$ wf clear
 
   Wireless network connection history is now cleared
 ```
