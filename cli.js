@@ -20,37 +20,38 @@ const command = cli.input[0] || 'status';
 const network = cli.input[1];
 
 
+
+let promise = null;
+spinner.start();
+
 if (command === 'status') {
-    spinner.start();
     spinner.text = 'Retrieving wireless network status';
 
-    wifi.status().then(network => {
+    promise = wifi.status().then(network => {
         if (!network) {
             throw new Error('You are not connected to any wireless networks');
         }
         spinner.text = `You are currently connected to ${network.name}`;
         spinner.succeed();
-    }).catch(error => {
-        spinner.text = error.message;
-        spinner.fail();
     });
 } else if (command === 'scan') {
-    spinner.start();
     spinner.text = 'Scanning nearby wireless networks';
 
-    wifi.scan().then(networks => {
+    promise = wifi.scan().then(networks => {
         if (networks.length === 0) {
             throw new Error('No wireless networks found');
         }
         spinner.stop();
         return displayWifiTable(networks);
-    }).catch(error => {
-        spinner.text = error.message;
-        spinner.fail();
     });
+} else {
+    promise = Promise.reject(new Error(`Unknown command: ${command}`))
 }
 
-
+promise.catch(error => {
+    spinner.text = error.message;
+    spinner.fail();
+})
 
 
 
