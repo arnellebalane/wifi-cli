@@ -14,18 +14,6 @@ function execute(command) {
 }
 
 
-function getConnectedInterfaces() {
-    return execute('nmcli -m multiline device')
-        .then(multilineToJsonArray)
-        .then(ifaces => ifaces.filter(iface => iface.state === 'connected'));
-}
-
-
-function getConnectedInterface() {
-    return getConnectedInterfaces().then(ifaces => ifaces[0].device);
-}
-
-
 function status() {
     return execute('nmcli -m multiline connection status')
         .then(multilineToJsonArray)
