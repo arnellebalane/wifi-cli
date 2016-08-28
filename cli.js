@@ -7,8 +7,8 @@ const cli = meow(`
   usage:
 
     wf                      - display current connection
-    wf list                 - list available networks
-    wf connect <id|ssid>    - connect to a networrk
+    wf scan                 - scan nearby wireless networks
+    wf connect <id|ssid>    - connect to a wireless networrk
     wf disconnect           - disconnect from current network
 `);
 

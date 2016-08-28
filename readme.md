@@ -28,10 +28,10 @@ $ wf
   You are connected to "NETWORK_NAME"
 ```
 
-List available wireless networks:
+Scan nearby wireless networks:
 
 ```
-$ wf list
+$ wf scan
 
      SSID              SIGNAL
 
@@ -40,8 +40,7 @@ $ wf list
   3  "NETWORK_THREE"   ===
 ```
 
-Connect to a wireless network (if the network is already in your history,
-you might not be asked for a password again):
+Connect to a wireless network:
 
 ```
 $ wf connect 1
