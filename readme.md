@@ -5,6 +5,8 @@ Manage wireless network connections from the command line. This package wraps
 the builtin `nmcli` command in Linux systems, and thus will not work on other
 operating systems. Hoping to add support for other platforms soon.
 
+[See it in action (asciinema)](https://asciinema.org/a/5hwe1rdso30almmb7kal7swqt)
+
 
 ## Installation
 
