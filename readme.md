@@ -3,7 +3,7 @@
 
 Manage wireless network connections from the command line. This package wraps
 the builtin `nmcli` command in Linux systems, and thus will not work on other
-operating systems.
+operating systems. Hoping to add support for other platforms soon.
 
 
 ## Installation
@@ -25,7 +25,7 @@ Display current wireless network connection:
 ```
 $ wf
 
-  You are connected to "NETWORK_NAME"
+  You are currently connected to NETWORK_NAME
 ```
 
 Scan nearby wireless networks:
@@ -33,11 +33,11 @@ Scan nearby wireless networks:
 ```
 $ wf scan
 
-     SSID              SIGNAL
+     SSID              SECURITY     SIGNAL
 
-  1  "NETWORK_ONE"     =====
-  2  "NETWORK_TWO"     ====
-  3  "NETWORK_THREE"   ===
+  1  NETWORK_ONE       WPA WPA2     84
+  2  NETWORK_TWO       WPA2         71
+  3  NETWORK_THREE     --           70
 ```
 
 Connect to a wireless network:
@@ -45,7 +45,7 @@ Connect to a wireless network:
 ```
 $ wf connect 1
 $ wf connect "NETWORK_NAME"
-  password:
+  Password for wireless network NETWORK_NAME: *****
 
   You are now connected to "NETWORK_NAME"
 ```
