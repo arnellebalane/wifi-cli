@@ -10,6 +10,8 @@ operating systems. Hoping to add support for other platforms soon.
 
 ## Installation
 
+This package requires at least **Node v6**
+
 To use this tool, you have to install it globally through `npm`:
 
 ```
