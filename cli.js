@@ -27,16 +27,24 @@ const target = cli.input[1];
 
 let promise = null;
 
-if (command === 'status') {
-    promise = status();
-} else if (command === 'scan') {
-    promise = scan();
-} else if (command === 'connect') {
-    promise = connect(target);
-} else if (command === 'disconnect') {
-    promise = disconnect();
-} else {
-    promise = Promise.reject(new Error(`Unknown command: ${command}`))
+switch (command) {
+    case 'status':
+        promise = status();
+        break;
+    case 'scan':
+    case 's':
+        promise = scan();
+        break;
+    case 'connect':
+    case 'c':
+        promise = connect(target);
+        break;
+    case 'disconnect':
+    case 'dc':
+        promise = disconnect();
+        break;
+    default:
+        promise = Promise.reject(new Error(`Unknown command: ${command}`));
 }
 
 promise.catch(error => {
