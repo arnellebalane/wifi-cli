@@ -97,11 +97,10 @@ function connect(target) {{
     }).then(credentials => {
         spinner.text = `Connecting to wireless network ${success(credentials[0])}`;
         spinner.start();
-        return wifi.connect(...credentials);
+        return wifi.connect(...credentials).catch(error => {
+            throw new Error(`Failed to connect to ${fail(credentials[0])}`);
+        });
     }).then(network => {
-        if (!network) {
-            throw new Error(`Failed to connect to wireless network`);
-        }
         spinner.text = `You are now connected to ${success(network.name)}`;
         spinner.succeed();
     });
