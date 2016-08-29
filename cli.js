@@ -21,56 +21,14 @@ const command = cli.input[0] || 'status';
 const target = cli.input[1];
 
 
-
 let promise = null;
-spinner.start();
 
 if (command === 'status') {
-    spinner.text = 'Retrieving wireless network status';
-
-    promise = wifi.status().then(network => {
-        if (!network) {
-            throw new Error('You are not connected to any wireless networks');
-        }
-        spinner.text = `You are currently connected to ${network.name}`;
-        spinner.succeed();
-    });
+    promise = status();
 } else if (command === 'scan') {
-    spinner.text = 'Scanning nearby wireless networks';
-
-    promise = wifi.scan().then(networks => {
-        if (networks.length === 0) {
-            throw new Error('No wireless networks found');
-        }
-        spinner.stop();
-        return displayWifiTable(networks);
-    });
+    promise = scan();
 } else if (command === 'connect') {
-    spinner.text = 'Establishing wireless network connection';
-
-    promise = wifi.network(target)
-        .then(network => {
-            if (!network) {
-                throw new Error(`Wireless network ${target} not found`);
-            } else if (!network.security) {
-                return Promise.resolve([network.ssid]);
-            }
-            spinner.stop();
-            return askWifiPassword(network.ssid)
-                .then(password => [network.ssid, password]);
-        })
-        .then(credentials => {
-            spinner.text = `Connecting to wireless network ${credentials[0]}`;
-            spinner.start();
-            return wifi.connect(...credentials);
-        })
-        .then(network => {
-            if (!network) {
-                throw new Error(`Failed to connect to wireless network`);
-            }
-            spinner.text = `You are now connected to ${network.name}`;
-            spinner.succeed();
-        });
+    promise = connect(target);
 } else {
     promise = Promise.reject(new Error(`Unknown command: ${command}`))
 }
@@ -81,6 +39,63 @@ promise.catch(error => {
 })
 
 
+
+/** core command actions **/
+
+function status() {
+    spinner.start();
+    spinner.text = 'Retrieving wireless network status';
+    return wifi.status().then(network => {
+        if (!network) {
+            throw new Error('You are not connected to any wireless networks');
+        }
+        spinner.text = `You are currently connected to ${network.name}`;
+        spinner.succeed();
+    });
+}
+
+
+function scan() {
+    spinner.start();
+    spinner.text = 'Scanning nearby wireless networks';
+    return wifi.scan().then(networks => {
+        if (networks.length === 0) {
+            throw new Error('No wireless networks found');
+        }
+        spinner.stop();
+        return displayWifiTable(networks);
+    });
+}
+
+
+function connect(target) {{
+    spinner.start();
+    spinner.text = 'Establishing wireless network connection';
+    return wifi.network(target).then(network => {
+        if (!network) {
+            throw new Error(`Wireless network ${target} not found`);
+        } else if (!network.security) {
+            return Promise.resolve([network.ssid]);
+        }
+        spinner.stop();
+        return askWifiPassword(network.ssid)
+            .then(password => [network.ssid, password]);
+    }).then(credentials => {
+        spinner.text = `Connecting to wireless network ${credentials[0]}`;
+        spinner.start();
+        return wifi.connect(...credentials);
+    }).then(network => {
+        if (!network) {
+            throw new Error(`Failed to connect to wireless network`);
+        }
+        spinner.text = `You are now connected to ${network.name}`;
+        spinner.succeed();
+    });
+}}
+
+
+
+/** helper functions **/
 
 function displayWifiTable(networks) {
     const lengths = widestColumnValues(networks);
