@@ -16,9 +16,9 @@ const cli = meow(`
   usage:
 
     wf                      - display current connection
-    wf scan                 - scan nearby wireless networks
-    wf connect <id|ssid>    - connect to a wireless networrk
-    wf disconnect           - disconnect from current network
+    wf s|scan               - scan nearby wireless networks
+    wf c|connect <id|ssid>  - connect to a wireless networrk
+    wf dc|disconnect        - disconnect from current network
 `);
 
 const command = cli.input[0] || 'status';
