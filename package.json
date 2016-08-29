@@ -1,6 +1,6 @@
 {
   "name": "wifi-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "manage wifi connections from the command line",
   "main": "index.js",
   "bin": {
