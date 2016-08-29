@@ -45,7 +45,7 @@ function network(id) {
 
 
 function connect(ssid, password) {
-    let command = `nmcli device wifi connect "${network}"`;
+    let command = `nmcli device wifi connect "${ssid}"`;
     if (password) {
         command += ` password "${password}"`;
     }
