@@ -2,10 +2,14 @@
 const meow = require('meow');
 const inquirer = require('inquirer');
 const spinner = require('ora')();
+const chalk = require('chalk');
 const wifi = require('.');
 
 const widestColumnValues = require('./lib/widest-column-values');
 const rightPad = require('./lib/right-pad');
+
+const success = chalk.green.bold;
+const fail = chalk.red.bold;
 
 
 const cli = meow(`
@@ -51,7 +55,7 @@ function status() {
         if (!network) {
             throw new Error('You are not connected to any wireless networks');
         }
-        spinner.text = `You are currently connected to ${network.name}`;
+        spinner.text = `You are currently connected to ${success(network.name)}`;
         spinner.succeed();
     });
 }
@@ -75,7 +79,7 @@ function connect(target) {{
     spinner.text = 'Establishing wireless network connection';
     return wifi.network(target).then(network => {
         if (!network) {
-            throw new Error(`Wireless network ${target} not found`);
+            throw new Error(`Wireless network ${fail(target)} not found`);
         } else if (!network.security) {
             return Promise.resolve([network.ssid]);
         }
@@ -83,14 +87,14 @@ function connect(target) {{
         return askWifiPassword(network.ssid)
             .then(password => [network.ssid, password]);
     }).then(credentials => {
-        spinner.text = `Connecting to wireless network ${credentials[0]}`;
+        spinner.text = `Connecting to wireless network ${success(credentials[0])}`;
         spinner.start();
         return wifi.connect(...credentials);
     }).then(network => {
         if (!network) {
             throw new Error(`Failed to connect to wireless network`);
         }
-        spinner.text = `You are now connected to ${network.name}`;
+        spinner.text = `You are now connected to ${success(network.name)}`;
         spinner.succeed();
     });
 }}
@@ -101,7 +105,7 @@ function disconnect() {
     spinner.text = 'Disconnecting from wireless network';
     return wifi.disconnect().then(network => {
         if (network) {
-            spinner.text = `You are now disconnected from ${network.name}`;
+            spinner.text = `You are now disconnected from ${success(network.name)}`;
         } else {
             spinner.text = `You are now disconnected from the network.`;
         }
@@ -125,7 +129,11 @@ function displayWifiTable(networks) {
     networks.forEach((network, i) => {
         const row = wifiTableRow(i + 1, network.ssid, network.security || '-',
             network.signal, lengths);
-        console.log(`  ${row}`);
+        if (network.active === 'yes') {
+            console.log(`  ${success(row)}`);
+        } else {
+            console.log(`  ${row}`);
+        }
     });
     return networks;
 }
@@ -144,6 +152,6 @@ function askWifiPassword(ssid) {
     return inquirer.prompt([{
         type: 'password',
         name: 'password',
-        message: `Password for wireless network ${ssid}:`
+        message: `Password for wireless network ${success(ssid)}:`
     }]).then(answers => answers.password);
 }
