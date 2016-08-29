@@ -53,7 +53,19 @@ function connect(ssid, password) {
 }
 
 
+function disconnect() {
+    return status().then(connection => {
+        if (connection) {
+            return execute(`nmcli connection down id "${connection.name}"`)
+                .then(output => connection);
+        }
+        return connection;
+    });
+}
+
+
 exports.status = status;
 exports.scan = scan;
 exports.network = network;
 exports.connect = connect;
+exports.disconnect = disconnect;

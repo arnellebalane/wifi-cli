@@ -29,6 +29,8 @@ if (command === 'status') {
     promise = scan();
 } else if (command === 'connect') {
     promise = connect(target);
+} else if (command === 'disconnect') {
+    promise = disconnect();
 } else {
     promise = Promise.reject(new Error(`Unknown command: ${command}`))
 }
@@ -92,6 +94,20 @@ function connect(target) {{
         spinner.succeed();
     });
 }}
+
+
+function disconnect() {
+    spinner.start();
+    spinner.text = 'Disconnecting from wireless network';
+    return wifi.disconnect().then(network => {
+        if (network) {
+            spinner.text = `You are now disconnected from ${network.name}`;
+        } else {
+            spinner.text = `You are now disconnected from the network.`;
+        }
+        spinner.succeed();
+    });
+}
 
 
 
