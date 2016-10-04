@@ -4,11 +4,12 @@ const meow = require('meow');
 const spinner = require('ora')();
 const chalk = require('chalk');
 const wifi = require('.');
+const log = require('./lib/logger').log;
 
 const success = chalk.green.bold;
 const fail = chalk.red.bold;
 
-
+debugger;
 const cli = meow(`
   usage:
 
@@ -52,7 +53,7 @@ promise.catch(error => {
     spinner.fail();
 });
 
-
+debugger;
 
 /** core command actions **/
 

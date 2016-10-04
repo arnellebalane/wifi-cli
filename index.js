@@ -1,6 +1,6 @@
 const shell = require('shelljs');
 const multilineToJsonArray = require('./lib/multiline-to-json-array');
-
+const log = require('./lib/logger').log;
 
 function execute(command) {
     return new Promise((resolve, reject) => {
@@ -26,9 +26,9 @@ function scan() {
         .then(multilineToJsonArray)
         .then(networks => {
             return networks.map(network => {
-                network.ssid = network.ssid.replace(/^'|'$/g, '')
+                network.ssid = network.ssid.replace(/^'|'$/g, '');
                 return network;
-            })
+            });
         })
         .then(networks => networks.sort((a, b) => b.signal - a.signal));
 }
