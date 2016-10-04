@@ -17,8 +17,11 @@ const cli = meow(`
 
     wf                      - display current connection
     wf s|scan               - scan nearby wireless networks
-    wf c|connect <id|ssid>  - connect to a wireless networrk
+    wf c|connect <id|ssid>  - connect to a wireless network
     wf dc|disconnect        - disconnect from current network
+    wf h|istory             - list connection history
+    wf f|orget <index|ssid> - remove the network with the given ssid or index
+    wf f|orget              - forget all the networks in the connection history
 `);
 
 const command = cli.input[0] || 'status';
@@ -50,7 +53,7 @@ switch (command) {
 promise.catch(error => {
     spinner.text = error.message;
     spinner.fail();
-})
+});
 
 
 
