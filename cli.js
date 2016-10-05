@@ -18,7 +18,7 @@ const cli = meow(`
     wf c|connect <id|ssid>  - connect to a wireless network
     wf dc|disconnect        - disconnect from current network
     wf h|istory             - list connection history
-    wf f|orget <id|ssid> - remove the network with the given id or ssid
+    wf f|orget <id|ssid>    - remove the wireless network
     wf f|orget              - forget all the networks in the connection history
 `);
 
