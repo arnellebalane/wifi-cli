@@ -4,9 +4,6 @@ const inquirer = require('inquirer');
 const widestColumnValues = require('./lib/widest-column-values');
 const rightPad = require('./lib/right-pad');
 const success = chalk.green.bold;
-const fail = chalk.red.bold;
-
-const log = require('./lib/logger').log;
 
 const wifiTableRow = (id, displayFields, displayLengths) => {
     let padObj = [rightPad(id, 2)];

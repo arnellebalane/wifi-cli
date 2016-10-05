@@ -7,7 +7,6 @@ const wifi = require('.');
 
 const success = chalk.green.bold;
 const fail = chalk.red.bold;
-const log = require('./lib/logger').log;
 
 const cli = meow(`
   usage:

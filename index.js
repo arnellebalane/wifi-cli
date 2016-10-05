@@ -1,6 +1,5 @@
 const shell = require('shelljs');
 const multilineToJsonArray = require('./lib/multiline-to-json-array');
-const log = require('./lib/logger').log;
 
 function execute(command) {
     return new Promise((resolve, reject) => {
@@ -76,7 +75,7 @@ function history() {
             return network.type === '802-11-wireless';
         });
     })
-    .then(networks => networks.sort((a, b) => b.name - a.name));
+    .then(networks => networks.sort((a, b) => a.name == b.name ? 0 : a.name < b.name ? -1 : 1));
 }
 
 
