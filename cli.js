@@ -4,7 +4,6 @@ const meow = require('meow');
 const spinner = require('ora')();
 const chalk = require('chalk');
 const wifi = require('.');
-const log = require('./lib/logger').log;
 
 const success = chalk.green.bold;
 const fail = chalk.red.bold;
@@ -44,12 +43,19 @@ switch (command) {
     case 'dc':
         promise = disconnect();
         break;
+    case 'history':
+    case 'h':
+        promise = history();
+        break;
+    case 'forget':
+    case 'f':
+        promise = forget(target);
+        break;
     default:
         promise = Promise.reject(new Error(`Unknown command: ${command}`));
 }
 
 promise.catch(error => {
-    log.debug(error);
     spinner.text = error.message;
     spinner.fail();
 });
@@ -118,4 +124,12 @@ function disconnect() {
         }
         spinner.succeed();
     });
+}
+
+function history() {
+
+}
+
+function forget(target) {
+
 }

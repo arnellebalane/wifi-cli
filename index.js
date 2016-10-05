@@ -1,6 +1,5 @@
 const shell = require('shelljs');
 const multilineToJsonArray = require('./lib/multiline-to-json-array');
-const log = require('./lib/logger').log;
 
 function execute(command) {
     return new Promise((resolve, reject) => {
