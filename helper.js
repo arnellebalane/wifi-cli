@@ -15,6 +15,8 @@ const wifiTableRow = (id, displayFields, displayLengths) => {
     return padObj.join(' '.repeat(5));
 };
 
+const writeHeader = (displayFields, displayLengths) => console.log("\n  " + wifiTableRow('', displayFields, displayLengths) + "\n");
+
 exports.displayWifiTable = (networks) => {
     const lengths = widestColumnValues(networks);
     let displayLengths = [
@@ -24,8 +26,7 @@ exports.displayWifiTable = (networks) => {
     ];
     let displayFields = ['SSID', 'SECURITY', 'SIGNAL'];
 
-    const headRow = wifiTableRow('', displayFields, displayLengths);
-    console.log(`\n  ${headRow}\n`);
+    writeHeader(displayFields, displayLengths);
 
     networks.forEach((network, i) => {
         displayFields = [network.ssid, network.security || '-', network.signal];
@@ -48,8 +49,7 @@ exports.displayHistoryTable = (networks) => {
     ];
     let displayFields = ['NAME', 'UUID', 'TYPE'];
 
-    const headRow = wifiTableRow('', displayFields, displayLengths);
-    console.log(`\n  ${headRow}\n`);
+    writeHeader(displayFields, displayLengths);
 
     networks.forEach((network, i) => {
         displayFields = [network.name, network.uuid, network.type];
