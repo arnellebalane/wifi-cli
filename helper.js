@@ -20,7 +20,7 @@ const writeHeader = (displayFields, displayLengths) => console.log("\n  " + wifi
 exports.displayWifiTable = (networks) => {
     const lengths = widestColumnValues(networks);
     let displayLengths = [
-        Math.max(lengths.ssid, 'NAME'.length),
+        Math.max(lengths.ssid, 'SSID'.length),
         Math.max(lengths.security, 'SECURITY'.length),
         Math.max(lengths.signal, 'SIGNAL'.length)
     ];
@@ -43,11 +43,11 @@ exports.displayWifiTable = (networks) => {
 exports.displayHistoryTable = (networks) => {
     const lengths = widestColumnValues(networks);
     let displayLengths = [
-        Math.max(lengths.name, 'NAME'.length),
+        Math.max(lengths.name, 'SSID'.length),
         Math.max(lengths.uuid, 'UUID'.length),
         Math.max(lengths.type, 'TYPE'.length)
     ];
-    let displayFields = ['NAME', 'UUID', 'TYPE'];
+    let displayFields = ['SSID', 'UUID', 'TYPE'];
 
     writeHeader(displayFields, displayLengths);
 
@@ -65,4 +65,17 @@ exports.askWifiPassword = (ssid) => {
         name: 'password',
         message: `Password for wireless network ${success(ssid)}:`
     }]).then(answers => answers.password);
+};
+
+exports.askConfirmation = (ssid) => {
+    let confirmation = {
+        type: 'confirm',
+        name: 'confirm',
+        message: 'Do you wish to forget all networks?'
+    };
+
+    if (ssid) {
+        confirmation.message = `Do you wish to forget ${success(ssid)}?`;
+    }
+    return inquirer.prompt([confirmation]).then(answers => answers.confirm);
 };

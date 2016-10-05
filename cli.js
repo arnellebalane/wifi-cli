@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+
+const inquirer = require('inquirer');
 const helper = require('./helper');
 const meow = require('meow');
 const spinner = require('ora')();
@@ -16,7 +18,7 @@ const cli = meow(`
     wf c|connect <id|ssid>  - connect to a wireless network
     wf dc|disconnect        - disconnect from current network
     wf h|istory             - list connection history
-    wf f|orget <index|ssid> - remove the network with the given ssid or index
+    wf f|orget <id|ssid> - remove the network with the given id or ssid
     wf f|orget              - forget all the networks in the connection history
 `);
 
@@ -87,29 +89,31 @@ function scan() {
 }
 
 
-function connect(target) {{
-    spinner.start();
-    spinner.text = 'Establishing wireless network connection';
-    return wifi.network(target).then(network => {
-        if (!network) {
-            throw new Error(`Wireless network ${fail(target)} not found`);
-        } else if (!network.security) {
-            return Promise.resolve([network.ssid]);
-        }
-        spinner.stop();
-        return helper.askWifiPassword(network.ssid)
-            .then(password => [network.ssid, password]);
-    }).then(credentials => {
-        spinner.text = `Connecting to wireless network ${success(credentials[0])}`;
+function connect(target) {
+    {
         spinner.start();
-        return wifi.connect(...credentials).catch(error => {
-            throw new Error(`Failed to connect to ${fail(credentials[0])}`);
+        spinner.text = 'Establishing wireless network connection';
+        return wifi.networkFromScan(target).then(network => {
+            if (!network) {
+                throw new Error(`Wireless network ${fail(target)} not found`);
+            } else if (!network.security) {
+                return Promise.resolve([network.ssid]);
+            }
+            spinner.stop();
+            return helper.askWifiPassword(network.ssid)
+                .then(password => [network.ssid, password]);
+        }).then(credentials => {
+            spinner.text = `Connecting to wireless network ${success(credentials[0])}`;
+            spinner.start();
+            return wifi.connect(...credentials).catch(error => {
+                throw new Error(`Failed to connect to ${fail(credentials[0])}`);
+            });
+        }).then(network => {
+            spinner.text = `You are now connected to ${success(network.name)}`;
+            spinner.succeed();
         });
-    }).then(network => {
-        spinner.text = `You are now connected to ${success(network.name)}`;
-        spinner.succeed();
-    });
-}}
+    }
+}
 
 
 function disconnect() {
@@ -129,14 +133,21 @@ function history() {
     spinner.start();
     spinner.text = 'Listing the connection history';
     return wifi.history().then(networks => {
-      if (networks.length === 0) {
-          throw new Error('You have no connection history');
-      }
-      spinner.stop();
-      return helper.displayHistoryTable(networks);
+        if (networks.length === 0) {
+            throw new Error('You have no connection history');
+        }
+        spinner.stop();
+        return helper.displayHistoryTable(networks);
     });
 }
 
-function forget(target) {
-
+function forget(ssid) {
+    return helper.askConfirmation(ssid).then(answer => {
+      console.log(answer);
+      return answer;
+    });
+    /*return wifi.forget(ssid).then(network => {
+    spinner.start();
+    spinner.text = 'Retrieving network(s) to forget';
+    });*/
 }
