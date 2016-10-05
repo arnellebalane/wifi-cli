@@ -15,9 +15,14 @@ function execute(command) {
 
 
 function status() {
-    return execute('nmcli -m multiline connection status')
-        .then(multilineToJsonArray)
-        .then(networks => networks.find(network => network.default === 'yes'));
+    return execute('nmcli d | grep wifi')
+        .then((network) => {
+            network = network.split(/\s{2,}/);
+            if (network[2] === 'connected') {
+                return {name:network[3]};
+            }
+            return false;
+        });
 }
 
 

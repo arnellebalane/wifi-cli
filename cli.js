@@ -9,7 +9,7 @@ const log = require('./lib/logger').log;
 const success = chalk.green.bold;
 const fail = chalk.red.bold;
 
-debugger;
+
 const cli = meow(`
   usage:
 
@@ -49,11 +49,10 @@ switch (command) {
 }
 
 promise.catch(error => {
+    log.debug(error);
     spinner.text = error.message;
     spinner.fail();
 });
-
-debugger;
 
 /** core command actions **/
 
