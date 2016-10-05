@@ -77,7 +77,7 @@ function scan() {
             throw new Error('No wireless networks found');
         }
         spinner.stop();
-        return displayWifiTable(networks);
+        return helper.displayWifiTable(networks);
     });
 }
 
@@ -92,7 +92,7 @@ function connect(target) {{
             return Promise.resolve([network.ssid]);
         }
         spinner.stop();
-        return askWifiPassword(network.ssid)
+        return helper.askWifiPassword(network.ssid)
             .then(password => [network.ssid, password]);
     }).then(credentials => {
         spinner.text = `Connecting to wireless network ${success(credentials[0])}`;

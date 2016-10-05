@@ -4,7 +4,15 @@ const inquirer = require('inquirer');
 const widestColumnValues = require('./lib/widest-column-values');
 const rightPad = require('./lib/right-pad');
 
-function displayWifiTable(networks) {
+const wifiTableRow = (id, ssid, security, signal, lengths) => {
+    return [
+        rightPad(id, 3) + rightPad(ssid, lengths.ssid),
+        rightPad(security, lengths.security),
+        rightPad(signal, lengths.signal)
+    ].join(' '.repeat(5));
+};
+
+exports.displayWifiTable = (networks) => {
     const lengths = widestColumnValues(networks);
     lengths.ssid = Math.max(lengths.ssid, 'NAME'.length);
     lengths.security = Math.max(lengths.security, 'SECURITY'.length);
@@ -23,22 +31,12 @@ function displayWifiTable(networks) {
         }
     });
     return networks;
-}
+};
 
-
-function wifiTableRow(id, ssid, security, signal, lengths) {
-    return [
-        rightPad(id, 3) + rightPad(ssid, lengths.ssid),
-        rightPad(security, lengths.security),
-        rightPad(signal, lengths.signal)
-    ].join(' '.repeat(5));
-}
-
-
-function askWifiPassword(ssid) {
+exports.askWifiPassword = (ssid) => {
     return inquirer.prompt([{
         type: 'password',
         name: 'password',
         message: `Password for wireless network ${success(ssid)}:`
     }]).then(answers => answers.password);
-}
+};
