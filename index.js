@@ -1,5 +1,6 @@
 const shell = require('shelljs');
 const multilineToJsonArray = require('./lib/multiline-to-json-array');
+const log = require('./lib/logger').log;
 
 function execute(command) {
     return new Promise((resolve, reject) => {
@@ -67,9 +68,21 @@ function disconnect() {
     });
 }
 
+function history() {
+    return execute('nmcli -m multiline connection')
+    .then(multilineToJsonArray)
+    .then(network => {
+        return network.filter((network) => {
+            return network.type === '802-11-wireless';
+        });
+    })
+    .then(networks => networks.sort((a, b) => b.name - a.name));
+}
+
 
 exports.status = status;
 exports.scan = scan;
 exports.network = network;
 exports.connect = connect;
 exports.disconnect = disconnect;
+exports.history = history;

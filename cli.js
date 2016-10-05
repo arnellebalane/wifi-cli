@@ -7,7 +7,7 @@ const wifi = require('.');
 
 const success = chalk.green.bold;
 const fail = chalk.red.bold;
-
+const log = require('./lib/logger').log;
 
 const cli = meow(`
   usage:
@@ -127,7 +127,15 @@ function disconnect() {
 }
 
 function history() {
-
+    spinner.start();
+    spinner.text = 'Listing the connection history';
+    return wifi.history().then(networks => {
+      if (networks.length === 0) {
+          throw new Error('You have no connection history');
+      }
+      spinner.stop();
+      return helper.displayHistoryTable(networks);
+    });
 }
 
 function forget(target) {
