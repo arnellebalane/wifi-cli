@@ -101,9 +101,7 @@ function forget(ssid) {
         if (networks.length === 0) {
             throw new Error('You have no connection history');
         }
-        const connectionList = networks.map(function(a) {
-            return `'${a.name}'`;
-        }).join(" ");
+        const connectionList = networks.map((a) => `'${a.name}'`).join(" ");
         return execute(`nmcli connection delete ${connectionList}`).then(status);
     });
 }

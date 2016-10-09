@@ -32,9 +32,5 @@
     "meow": "^3.7.0",
     "ora": "^0.3.0",
     "shelljs": "^0.7.4"
-  },
-  "devDependencies": {
-    "winston": "^2.2.0",
-    "winston-daily-rotate-file": "^1.3.1"
   }
 }
