@@ -8,7 +8,7 @@ const success = chalk.green.bold;
 const wifiTableRow = (id, displayFields, displayLengths) => {
     let padObj = [rightPad(id, 2)];
 
-    for(let i=0; i < displayFields.length; i++) {
+    for (let i = 0; i < displayFields.length; i++) {
         padObj.push(rightPad(displayFields[i], displayLengths[i]));
     }
 

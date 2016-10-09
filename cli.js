@@ -143,11 +143,13 @@ function history() {
 
 function forget(ssid) {
     return helper.askConfirmation(ssid).then(answer => {
-      console.log(answer);
-      return answer;
+        if (answer) {
+            spinner.start();
+            spinner.text = 'Retrieving network(s) to forget';
+            return wifi.forget(ssid).then(network => {
+                spinner.stop();
+            });
+        }
     });
-    /*return wifi.forget(ssid).then(network => {
-    spinner.start();
-    spinner.text = 'Retrieving network(s) to forget';
-    });*/
+
 }

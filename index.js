@@ -83,7 +83,6 @@ function history() {
     return execute('nmcli -m multiline connection')
         .then(multilineToJsonArray)
         .then(network => {
-            console.log(network);
             return network.filter((network) => {
                 return network.type === '802-11-wireless';
             });
@@ -96,6 +95,15 @@ function forget(ssid) {
         return execute(`nmcli connection delete ${ssid}`).then(status);
     }
 
+    return history().then(networks => {
+        if (networks.length === 0) {
+            throw new Error('You have no connection history');
+        }
+        const connectionList = networks.map(function(a) {
+            return `'${a.name}'`;
+        }).join(" ");
+        return execute(`nmcli connection delete ${connectionList}`).then(status);
+    });
 }
 
 exports.status = status;
