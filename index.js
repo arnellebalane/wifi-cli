@@ -92,7 +92,9 @@ function history() {
 
 function forget(ssid) {
     if (ssid) {
-        return execute(`nmcli connection delete ${ssid}`).then(status);
+        return networkFromHistory(ssid).then(network => {
+            return execute(`nmcli connection delete '${network.name}'`).then(status);
+        });
     }
 
     return history().then(networks => {
