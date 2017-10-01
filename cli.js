@@ -1,24 +1,25 @@
 #!/usr/bin/env node
-const meow = require('meow');
+
 const inquirer = require('inquirer');
+const helper = require('./helper');
+const meow = require('meow');
 const spinner = require('ora')();
 const chalk = require('chalk');
 const wifi = require('.');
 
-const widestColumnValues = require('./lib/widest-column-values');
-const rightPad = require('./lib/right-pad');
-
 const success = chalk.green.bold;
 const fail = chalk.red.bold;
-
 
 const cli = meow(`
   usage:
 
     wf                      - display current connection
     wf s|scan               - scan nearby wireless networks
-    wf c|connect <id|ssid>  - connect to a wireless networrk
+    wf c|connect <id|ssid>  - connect to a wireless network
     wf dc|disconnect        - disconnect from current network
+    wf h|istory             - list connection history
+    wf f|orget <id|ssid>    - remove the wireless network
+    wf f|orget              - forget all the networks in the connection history
 `);
 
 const command = cli.input[0] || 'status';
@@ -43,6 +44,14 @@ switch (command) {
     case 'dc':
         promise = disconnect();
         break;
+    case 'history':
+    case 'h':
+        promise = history();
+        break;
+    case 'forget':
+    case 'f':
+        promise = forget(target);
+        break;
     default:
         promise = Promise.reject(new Error(`Unknown command: ${command}`));
 }
@@ -50,9 +59,7 @@ switch (command) {
 promise.catch(error => {
     spinner.text = error.message;
     spinner.fail();
-})
-
-
+});
 
 /** core command actions **/
 
@@ -77,34 +84,36 @@ function scan() {
             throw new Error('No wireless networks found');
         }
         spinner.stop();
-        return displayWifiTable(networks);
+        return helper.displayWifiTable(networks);
     });
 }
 
 
-function connect(target) {{
-    spinner.start();
-    spinner.text = 'Establishing wireless network connection';
-    return wifi.network(target).then(network => {
-        if (!network) {
-            throw new Error(`Wireless network ${fail(target)} not found`);
-        } else if (!network.security) {
-            return Promise.resolve([network.ssid]);
-        }
-        spinner.stop();
-        return askWifiPassword(network.ssid)
-            .then(password => [network.ssid, password]);
-    }).then(credentials => {
-        spinner.text = `Connecting to wireless network ${success(credentials[0])}`;
+function connect(target) {
+    {
         spinner.start();
-        return wifi.connect(...credentials).catch(error => {
-            throw new Error(`Failed to connect to ${fail(credentials[0])}`);
+        spinner.text = 'Establishing wireless network connection';
+        return wifi.networkFromScan(target).then(network => {
+            if (!network) {
+                throw new Error(`Wireless network ${fail(target)} not found`);
+            } else if (!network.security) {
+                return Promise.resolve([network.ssid]);
+            }
+            spinner.stop();
+            return helper.askWifiPassword(network.ssid)
+                .then(password => [network.ssid, password]);
+        }).then(credentials => {
+            spinner.text = `Connecting to wireless network ${success(credentials[0])}`;
+            spinner.start();
+            return wifi.connect(...credentials).catch(error => {
+                throw new Error(`Failed to connect to ${fail(credentials[0])}`);
+            });
+        }).then(network => {
+            spinner.text = `You are now connected to ${success(network.name)}`;
+            spinner.succeed();
         });
-    }).then(network => {
-        spinner.text = `You are now connected to ${success(network.name)}`;
-        spinner.succeed();
-    });
-}}
+    }
+}
 
 
 function disconnect() {
@@ -120,45 +129,27 @@ function disconnect() {
     });
 }
 
+function history() {
+    spinner.start();
+    spinner.text = 'Listing the connection history';
+    return wifi.history().then(networks => {
+        if (networks.length === 0) {
+            throw new Error('You have no connection history');
+        }
+        spinner.stop();
+        return helper.displayHistoryTable(networks);
+    });
+}
 
-
-/** helper functions **/
-
-function displayWifiTable(networks) {
-    const lengths = widestColumnValues(networks);
-    lengths.ssid = Math.max(lengths.ssid, 'NAME'.length);
-    lengths.security = Math.max(lengths.security, 'SECURITY'.length);
-    lengths.signal = Math.max(lengths.signal, 'SIGNAL'.length);
-
-    const headRow = wifiTableRow('', 'SSID', 'SECURITY', 'SIGNAL', lengths);
-    console.log(`\n  ${headRow}\n`);
-
-    networks.forEach((network, i) => {
-        const row = wifiTableRow(i + 1, network.ssid, network.security || '-',
-            network.signal, lengths);
-        if (network.active === 'yes') {
-            console.log(`  ${success(row)}`);
-        } else {
-            console.log(`  ${row}`);
+function forget(ssid) {
+    return helper.askConfirmation(ssid).then(answer => {
+        if (answer) {
+            spinner.start();
+            spinner.text = 'Retrieving network(s) to forget';
+            return wifi.forget(ssid).then(network => {
+                spinner.stop();
+            });
         }
     });
-    return networks;
-}
 
-
-function wifiTableRow(id, ssid, security, signal, lengths) {
-    return [
-        rightPad(id, 3) + rightPad(ssid, lengths.ssid),
-        rightPad(security, lengths.security),
-        rightPad(signal, lengths.signal)
-    ].join(' '.repeat(5));
-}
-
-
-function askWifiPassword(ssid) {
-    return inquirer.prompt([{
-        type: 'password',
-        name: 'password',
-        message: `Password for wireless network ${success(ssid)}:`
-    }]).then(answers => answers.password);
 }
